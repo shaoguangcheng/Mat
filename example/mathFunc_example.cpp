@@ -13,8 +13,8 @@ void testScaleVec()
 
   std::cout << "After scale  : " << v1 << std::endl;
 
-  vec1d<float> v2(v1.size(), 1);
-  Mat_axpy(v1, float(2.0), v2);
+  vec1d<float> v2(v1.size(), 2);
+  Mat_Mul(v1, v2, v2);
   v2.print();
 }
 
