@@ -19,7 +19,7 @@ public:
 
   mat2d<T>& operator = (const mat2d<T>& m);
   
-  inline int rows() const {return nRow};
+  inline int rows() const {return nRow;}
   inline int cols() const {return nCol;}
   inline int total() const {return nRow*nCol;};
   
