@@ -14,8 +14,8 @@ private:
   int nElem;
 
 public:
-  T* data;
   int* refCount;
+  T* data;
   
 public:
   vec1d();
@@ -43,7 +43,7 @@ public:
 
   inline int size() const {return nElem;}
   inline int ref() const {return *refCount;}
-  
+ 
   friend std::ostream& operator << <T>(std::ostream& out, const vec1d<T>& v);
   void print(char sep = ' ') const;
 

@@ -179,4 +179,6 @@ std::ostream& operator << (std::ostream& out, const vec1d<T>& v)
       out << v.data[i] << " ";
     out << "]"<< std::endl;
   }
+
+  return out;
 }

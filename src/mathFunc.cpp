@@ -236,9 +236,11 @@ T Mat_Sum(const vec1d<T>& X)
 {
   T s = T(0);
   int size = X.size();
-  
+
+#pragma omp parallel for reduction(+:s) if(size > 300)  
   for(int i = 0; i < size; ++i)
-    s += X[i];
+    s += i;
+
 
   return s;
 }

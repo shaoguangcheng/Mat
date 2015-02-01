@@ -13,9 +13,10 @@ void testScaleVec()
 
   std::cout << "After scale  : " << v1 << std::endl;
 
-  vec1d<float> v2(v1.size(), 2);
-  Mat_Mul(v1, v2, v2);
-  v2.print();
+  vec1d<float> v2(v1.size(), 2), v3(v1.size());
+
+  Mat_Mul(v1, v2, v3);
+  v3.print();
 }
 
 
