@@ -153,190 +153,112 @@ MAT_UNARY_FUNC_SELF(Scale, X[i] *= alpha); // X = alpha * X
 template <class Dtype, class Func>
 void MAT_UNARY_FUNC(const Dtype& X, 
 		    Dtype& Y,
-		    Func op)
-{
-  int size = X.size();
-
-#pragma omp parallel for shared(X, size) if(size > 300)
-  for(int i = 0; i < size; ++i){
-    op(X[i], Y[i]);
-  }
-}
+		    Func op);
 
 // for vector and matrix
 template <class Dtype, class Func>
 void MAT_BINARY_FUNC(const Dtype& X1, 
 		     const Dtype& X2,
 		     Dtype& Y,
-		     Func op)
-{
-  int size = X1.size();
-
-#pragma omp parallel for shared(X1, X2, size) if(size > 300)
-  for(int i = 0; i < size; ++i){
-    op(X1[i], X2[i], Y[i]);
-  }
-}
+		     Func op);
 
 // for vector only
 template <class Dtype, class Func>
 void MAT_BINARY_FUNC_PARAM(const vec1d<Dtype>& X,
 			   const Dtype& alpha,
 			   vec1d<Dtype>& Y,
-			   Func op)
-{
-  int size = X.size();
-  
-#pragma omp parallel for shared(X, alpha, size) if(size > 300)
-  for(int i = 0; i < size; ++i){
-    op(X[i], alpha, Y[i]);
-  }
-}
+			   Func op);
 
 // for matrix only
 template <class Dtype, class Func>
 void MAT_BINARY_FUNC_PARAM(const mat2d<Dtype>& X,
 			   const Dtype& alpha,
 			   mat2d<Dtype>& Y,
-			   Func op)
-{
-  int size = X.size();
-  
-#pragma omp parallel for shared(X, alpha, size) if(size > 300)
-  for(int i = 0; i < size; ++i){
-    op(X[i], alpha, Y[i]);
-  }
-}
+			   Func op);
 
 // for vector only
 template <class Dtype, class Func>
 void MAT_UNARY_FUNC_SELF(vec1d<Dtype>& X,
 			 const Dtype& alpha,
-			 Func op)
-{
-  int size = X.size();
-
-#pragma omp parallel for shared(size) if(size > 300)
-  for(int i = 0; i < size; ++i){
-    op(X[i], alpha);
-  }
-}
+			 Func op);
 
 // for matrix only
 template <class Dtype, class Func>
 void MAT_UNARY_FUNC_SELF(mat2d<Dtype>& X,
 			 const Dtype& alpha,
-			 Func op)
-{
-  int size = X.size();
+			 Func op);
 
-#pragma omp parallel for shared(size) if(size > 300)
-  for(int i = 0; i < size; ++i){
-    op(X[i], alpha);
-  }
-}
-
-// Y = X*X
+// Y = X*X (vector and matrix)
 template <class Dtype>
-void Mat_Square(const Dtype& X, 
-		Dtype& Y);
+void Mat_Square(const Dtype& X, Dtype& Y);
 
-// Y = e^X
+// Y = e^X (vector and matrix)
 template <class Dtype>
-void Mat_Exp(const Dtype& X, 
-	     Dtype& Y);
+void Mat_Exp(const Dtype& X, Dtype& Y);
 
-// Y = sqrt(X)
+// Y = sqrt(X) (vector and matrix)
 template <class Dtype>
-void Mat_Sqrt(const Dtype& X, 
-	      Dtype& Y);
+void Mat_Sqrt(const Dtype& X, Dtype& Y);
 
-// Y = |X|
+// Y = |X| (vector and matrix)
 template <class Dtype>
-void Mat_Abs(const Dtype& X, 
-	     Dtype& Y);
+void Mat_Abs(const Dtype& X, Dtype& Y);
 
-// Y = cos(X)
+// Y = cos(X) (vector and matrix)
 template <class Dtype>
-void Mat_Cos(const Dtype& X, 
-	     Dtype& Y);
+void Mat_Cos(const Dtype& X, Dtype& Y);
 
-// Y = sin(X)
+// Y = sin(X) (vector and matrix)
 template <class Dtype>
-void Mat_Sin(const Dtype& X, 
-	     Dtype& Y);
+void Mat_Sin(const Dtype& X, Dtype& Y);
 
-// Y = X1 + X2
+// Y = X1 + X2 (vector and matrix)
 template <class Dtype>
-void Mat_Add(const Dtype& X1, 
-	     const Dtype& X2, 
-	     Dtype& Y);
+void Mat_Add(const Dtype& X1, const Dtype& X2, Dtype& Y);
 
-// Y = X1 - X2
+// Y = X1 - X2 (vector and matrix)
 template <class Dtype>
-void Mat_Sub(const Dtype& X1, 
-	     const Dtype& X2, 
-	     Dtype& Y);
+void Mat_Sub(const Dtype& X1, const Dtype& X2, Dtype& Y);
 
-// Y = X1 * X2
+// Y = X1 * X2 (vector and matrix)
 template <class Dtype>
-void Mat_Mul(const Dtype& X1, 
-	     const Dtype& X2, 
-	     Dtype& Y);
+void Mat_Mul(const Dtype& X1, const Dtype& X2, Dtype& Y);
 
-// Y = X1/X2 
+// Y = X1/X2 (vector and matrix)
 template <class Dtype>
-void Mat_Div(const Dtype& X1, 
-	     const Dtype& X2, 
-	     Dtype& Y);
+void Mat_Div(const Dtype& X1, const Dtype& X2, Dtype& Y);
 
 // Y = X + alpha (vector)
 template <class Dtype>
-void Mat_Add(const vec1d<Dtype>& X,
-	     const Dtype& alpha,
-	     vec1d<Dtype>& Y);
+void Mat_Add(const vec1d<Dtype>& X, const Dtype& alpha, vec1d<Dtype>& Y);
 
 // Y = X - alpha (vector)
 template <class Dtype>
-void Mat_Sub(const vec1d<Dtype>& X,
-	     const Dtype& alpha,
-	     vec1d<Dtype>& Y);
+void Mat_Sub(const vec1d<Dtype>& X, const Dtype& alpha, vec1d<Dtype>& Y);
 
 // Y = X * alpha (vector)
 template <class Dtype>
-void Mat_Mul(const vec1d<Dtype>& X,
-	     const Dtype& alpha,
-	     vec1d<Dtype>& Y);
+void Mat_Mul(const vec1d<Dtype>& X, const Dtype& alpha, vec1d<Dtype>& Y);
 
 // Y = X / alpha (vector)
 template <class Dtype>
-void Mat_Div(const vec1d<Dtype>& X,
-	     const Dtype& alpha,
-	     vec1d<Dtype>& Y);
+void Mat_Div(const vec1d<Dtype>& X, const Dtype& alpha, vec1d<Dtype>& Y);
 
 // Y = X + alpha (matrix)
 template <class Dtype>
-void Mat_Add(const mat2d<Dtype>& X,
-	     const Dtype& alpha,
-	     mat2d<Dtype>& Y);
+void Mat_Add(const mat2d<Dtype>& X, const Dtype& alpha, mat2d<Dtype>& Y);
 
 // Y = X - alpha (matrix)
 template <class Dtype>
-void Mat_Sub(const mat2d<Dtype>& X,
-	     const Dtype& alpha,
-	     mat2d<Dtype>& Y);
+void Mat_Sub(const mat2d<Dtype>& X, const Dtype& alpha, mat2d<Dtype>& Y);
 
 // Y = X * alpha (matrix)
 template <class Dtype>
-void Mat_Mul(const mat2d<Dtype>& X,
-	     const Dtype& alpha,
-	     mat2d<Dtype>& Y);
+void Mat_Mul(const mat2d<Dtype>& X, const Dtype& alpha, mat2d<Dtype>& Y);
 
 // Y = X / alpha (matrix)
 template <class Dtype>
-void Mat_Div(const mat2d<Dtype>& X,
-	     const Dtype& alpha,
-	     mat2d<Dtype>& Y);
+void Mat_Div(const mat2d<Dtype>& X, const Dtype& alpha, mat2d<Dtype>& Y);
 
 // X = X + alpha (vector)
 template <class Dtype>
@@ -361,21 +283,16 @@ void Mat_Scale(mat2d<Dtype>& X, const Dtype& alpha);
 
 // Y = alpha*X + Y
 template <class T>
-void Mat_axpy(const vec1d<T>& X, 
-	      const T& alpha, 
-	      vec1d<T>& Y);
+void Mat_axpy(const vec1d<T>& X, const T& alpha, vec1d<T>& Y);
 
 // Y = alpha*X + beta*Y
 template <class T>
-void Mat_axpby(const vec1d<T>& X, 
-	       const T& alpha, 
-	       vec1d<T>& Y,
-	       const T& beta);
+void Mat_axpby(const vec1d<T>& X, const T& alpha, 
+	       vec1d<T>& Y,const T& beta);
 
 // y = X^t*Y
 template <class T>
-T Mat_Dot(const vec1d<T>& X, 
-	  vec1d<T>& Y);
+T Mat_Dot(const vec1d<T>& X, vec1d<T>& Y);
 
 // Y = ||X||2
 template <class T>
@@ -391,15 +308,13 @@ T Mat_Mean(const vec1d<T>& X);
 
 // max(X)
 template <class T>
-void Mat_Max(const vec1d<T>& X, 
-	     T& m, 
-	     int& index = -1);
+void Mat_Max(const vec1d<T>& X, T& m, int& index = -1);
 
 // min(X)
 template <class T>
-void Mat_Min(const vec1d<T>& X, 
-	     T& m, 
-	     int& index = -1);
+void Mat_Min(const vec1d<T>& X, T& m, int& index = -1);
+
+//---------------------level 2--------------------------
 
 #include "mathFunc.cpp"
 #endif // end of math_func

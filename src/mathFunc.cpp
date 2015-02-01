@@ -1,6 +1,93 @@
 
 //----------------------level 0----------------------
 
+// for vector and matrix
+template <class Dtype, class Func>
+void MAT_UNARY_FUNC(const Dtype& X, 
+		    Dtype& Y,
+		    Func op)
+{
+  int size = X.size();
+
+#pragma omp parallel for shared(X, size) if(size > 300)
+  for(int i = 0; i < size; ++i){
+    op(X[i], Y[i]);
+  }
+}
+
+// for vector and matrix
+template <class Dtype, class Func>
+void MAT_BINARY_FUNC(const Dtype& X1, 
+		     const Dtype& X2,
+		     Dtype& Y,
+		     Func op)
+{
+  int size = X1.size();
+
+#pragma omp parallel for shared(X1, X2, size) if(size > 300)
+  for(int i = 0; i < size; ++i){
+    op(X1[i], X2[i], Y[i]);
+  }
+}
+
+// for vector only
+template <class Dtype, class Func>
+void MAT_BINARY_FUNC_PARAM(const vec1d<Dtype>& X,
+			   const Dtype& alpha,
+			   vec1d<Dtype>& Y,
+			   Func op)
+{
+  int size = X.size();
+  
+#pragma omp parallel for shared(X, alpha, size) if(size > 300)
+  for(int i = 0; i < size; ++i){
+    op(X[i], alpha, Y[i]);
+  }
+}
+
+// for matrix only
+template <class Dtype, class Func>
+void MAT_BINARY_FUNC_PARAM(const mat2d<Dtype>& X,
+			   const Dtype& alpha,
+			   mat2d<Dtype>& Y,
+			   Func op)
+{
+  int size = X.size();
+  
+#pragma omp parallel for shared(X, alpha, size) if(size > 300)
+  for(int i = 0; i < size; ++i){
+    op(X[i], alpha, Y[i]);
+  }
+}
+
+// for vector only
+template <class Dtype, class Func>
+void MAT_UNARY_FUNC_SELF(vec1d<Dtype>& X,
+			 const Dtype& alpha,
+			 Func op)
+{
+  int size = X.size();
+
+#pragma omp parallel for shared(size) if(size > 300)
+  for(int i = 0; i < size; ++i){
+    op(X[i], alpha);
+  }
+}
+
+// for matrix only
+template <class Dtype, class Func>
+void MAT_UNARY_FUNC_SELF(mat2d<Dtype>& X,
+			 const Dtype& alpha,
+			 Func op)
+{
+  int size = X.size();
+
+#pragma omp parallel for shared(size) if(size > 300)
+  for(int i = 0; i < size; ++i){
+    op(X[i], alpha);
+  }
+}
+
 // Y = X*X
 template <class Dtype>
 void Mat_Square(const Dtype& X, 
