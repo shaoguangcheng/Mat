@@ -14,11 +14,13 @@ void testScaleVec()
   std::cout << "After scale  : " << v1 << std::endl;
 
   vec1d<float> v2(v1.size(), 2), v3(v1.size());
-
-  Mat_Mul(v1, v2, v3);
-  v3.print();
   
-  std::cout << Mat_Sum(v3) << std::endl;
+  Mat_Mul(v1, v2, v3);
+
+  float max;
+  int index;
+  Mat_Max(v3, max, index);
+  std::cout << max << std::endl;
 }
 
 

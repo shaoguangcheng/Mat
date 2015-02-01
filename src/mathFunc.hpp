@@ -59,6 +59,9 @@ MAT_UNARY_FUNC(Sqrt, Y[i] = sqrt(X[i])); // Y = sqrt(X)
 MAT_UNARY_FUNC(Abs, Y[i] = fabs(X[i]));  // Y = |X|
 MAT_UNARY_FUNC(Cos, Y[i] = cos(X[i]));   // Y = cos(X)
 MAT_UNARY_FUNC(Sin, Y[i] = sin(X[i]));   // Y = sin(X)
+MAT_UNARY_FUNC(Tan, Y[i] = tan(X[i]));   // Y = tan(X)
+MAT_UNARY_FUNC(Log, Y[i] = log(X[i]));   // Y = log(X)
+MAT_UNARY_FUNC(Log10, Y[i] = log10(X[i]));   // Y = log10(X)
 
 #define MAT_BINARY_FUNC(name, operation)		\
   template <class Dtype>				\
@@ -212,6 +215,18 @@ void Mat_Cos(const Dtype& X, Dtype& Y);
 template <class Dtype>
 void Mat_Sin(const Dtype& X, Dtype& Y);
 
+// Y = tan(X) (vector and matrix)
+template <class Dtype>
+void Mat_Tan(const Dtype& X, Dtype& Y);
+
+// Y = log(X) (vector and matrix)
+template <class Dtype>
+void Mat_Log(const Dtype& X, Dtype& Y);
+
+// Y = log10(X) (vector and matrix)
+template <class Dtype>
+void Mat_Log10(const Dtype& X, Dtype& Y);
+
 // Y = X1 + X2 (vector and matrix)
 template <class Dtype>
 void Mat_Add(const Dtype& X1, const Dtype& X2, Dtype& Y);
@@ -308,11 +323,11 @@ T Mat_Mean(const vec1d<T>& X);
 
 // max(X)
 template <class T>
-void Mat_Max(const vec1d<T>& X, T& m, int& index = -1);
+void Mat_Max(const vec1d<T>& X, T& m, int& index);
 
 // min(X)
 template <class T>
-void Mat_Min(const vec1d<T>& X, T& m, int& index = -1);
+void Mat_Min(const vec1d<T>& X, T& m, int& index);
 
 //---------------------level 2--------------------------
 

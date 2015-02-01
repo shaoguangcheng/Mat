@@ -1,3 +1,4 @@
+#include <limits.h>
 
 //----------------------level 0----------------------
 
@@ -101,8 +102,8 @@ void Mat_Square(const Dtype& X,
 
   MAT_UNARY_FUNC(X, Y, [](decltype(X[0]) x,
 			  decltype(Y[0]) y){
-      y = x * x;
-    });
+		   y = x * x;
+		 });
 }
 
 // Y = e^X
@@ -118,8 +119,8 @@ void Mat_Exp(const Dtype& X,
 
   MAT_UNARY_FUNC(X, Y, [](decltype(X[0]) x,
 			  decltype(Y[0]) y){
-      y =  exp(x);
-    });
+		   y =  exp(x);
+		 });
 }
 
 // Y = sqrt(X)
@@ -135,8 +136,8 @@ void Mat_Sqrt(const Dtype& X,
 
   MAT_UNARY_FUNC(X, Y, [](decltype(X[0]) x, 
 			  decltype(Y[0]) y){
-      y = sqrt(x);
-    });
+		   y = sqrt(x);
+		 });
 }
 
 // Y = |X|
@@ -152,8 +153,8 @@ void Mat_Abs(const Dtype& X,
 
   MAT_UNARY_FUNC(X, Y, [](decltype(X[0]) x,
 			  decltype(Y[0]) y){
-      y = fabs(x);
-    });
+		   y = fabs(x);
+		 });
 }
 
 // Y = cos(X)
@@ -169,8 +170,8 @@ void Mat_Cos(const Dtype& X,
 
   MAT_UNARY_FUNC(X, Y, [](decltype(X[0]) x,
 			  decltype(Y[0]) y){
-      y = cos(x);
-    });
+		   y = cos(x);
+		 });
 }
 
 // Y = sin(X)
@@ -184,9 +185,58 @@ void Mat_Sin(const Dtype& X,
     exit(-1);
   } 
 
-  MAT_UNARY_FUNC(X, Y, [](decltype(X[0]) x){
-      return sin(x);
-    });
+  MAT_UNARY_FUNC(X, Y, [](decltype(X[0]) x,
+			  decltype(Y[0]) y){
+		   y = sin(x);
+		 });
+}
+
+// Y = tan(X) 
+template <class Dtype>
+void Mat_Tan(const Dtype& X, Dtype& Y)
+{
+  int size = X.size();
+  if(size != Y.size()){
+    DEBUGMSG("length must be the same");
+    exit(-1);
+  } 
+
+  MAT_UNARY_FUNC(X, Y, [](decltype(X[0]) x,
+			  decltype(Y[0]) y){
+		   y = tan(x);
+		 });  
+}
+
+// Y = log(X) 
+template <class Dtype>
+void Mat_Log(const Dtype& X, Dtype& Y)
+{
+  int size = X.size();
+  if(size != Y.size()){
+    DEBUGMSG("length must be the same");
+    exit(-1);
+  } 
+
+  MAT_UNARY_FUNC(X, Y, [](decltype(X[0]) x,
+			  decltype(Y[0]) y){
+		   y = log(x);
+		 });
+}
+
+// Y = log10(X) 
+template <class Dtype>
+void Mat_Log10(const Dtype& X, Dtype& Y)
+{
+  int size = X.size();
+  if(size != Y.size()){
+    DEBUGMSG("length must be the same");
+    exit(-1);
+  } 
+
+  MAT_UNARY_FUNC(X, Y, [](decltype(X[0]) x,
+			  decltype(Y[0]) y){
+		   y = log10(x);
+		 });
 }
 
 // Y = X1 + X2
@@ -280,8 +330,8 @@ void Mat_Add(const vec1d<Dtype>& X,
   MAT_BINARY_FUNC_PARAM(X, alpha, Y, [](const Dtype& x, 
 					const Dtype& a,
 					Dtype& y){
-      y = x + a;
-    });
+			  y = x + a;
+			});
 }
 
 // Y = X - alpha (vector)
@@ -299,8 +349,8 @@ void Mat_Sub(const vec1d<Dtype>& X,
   MAT_BINARY_FUNC_PARAM(X, alpha, Y, [](const Dtype& x, 
 					const Dtype& a,
 					Dtype& y){
-      y = x - a;
-    });
+			  y = x - a;
+			});
 }
 
 // Y = X * alpha (vector)
@@ -318,8 +368,8 @@ void Mat_Mul(const vec1d<Dtype>& X,
   MAT_BINARY_FUNC_PARAM(X, alpha, Y, [](const Dtype& x, 
 					const Dtype& a,
 					Dtype& y){
-      y = x * a;
-    });
+			  y = x * a;
+			});
 }
 
 
@@ -667,4 +717,43 @@ T Mat_Mean(const vec1d<T>& X)
   return Mat_Sum(X)/X.size();
 }
 
+template <class T>
+void Mat_Max(const vec1d<T>& X, T& m, int& index)
+{
+  int size = X.size();
+  m = T(INT_MIN);
+  
+#pragma omp parallel for if(size > 500)
+  for(int i = 0; i < size; ++i){
+    T tmp = X[i];
+    if(m < tmp){
+#pragma omp critical
+      {
+	m = tmp;
+	index = i;
+      }
+    }
+  }
+}
+
+template <class T>
+void Mat_Min(const vec1d<T>& X, T& m, int& index)
+{
+  int size = X.size();
+  m = T(INT_MAX);
+  
+#pragma omp parallel for if(size > 500)
+  for(int i = 0; i < size; ++i){
+    T tmp = X[i];
+    if(m > tmp){
+#pragma omp critical 
+      {
+	m = tmp;
+	index = i;
+      }
+    }
+  }
+}
+
+//---------------------level 2------------------------
 
