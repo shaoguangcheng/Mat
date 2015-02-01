@@ -1,3 +1,11 @@
+/*!
+ * \file global.hpp
+ * \breif some commonly used definitions.
+ *
+ * \author Shaoguang Cheng. From Xi'an, China
+ * \date   1/2/2015
+ */
+
 #ifndef __GLOBAL__
 #define __GLOBAL__
 

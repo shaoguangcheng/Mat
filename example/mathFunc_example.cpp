@@ -17,6 +17,8 @@ void testScaleVec()
 
   Mat_Mul(v1, v2, v3);
   v3.print();
+  
+  std::cout << Mat_Sum(v3) << std::endl;
 }
 
 

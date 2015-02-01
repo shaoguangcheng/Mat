@@ -1,6 +1,240 @@
-//#include "mathFunc.hpp"
 
 //----------------------level 0----------------------
+
+// Y = X*X
+template <class Dtype>
+void Mat_Square(const Dtype& X, 
+		Dtype& Y)
+{
+  int size = X.size();
+  if(size != Y.size()){
+    DEBUGMSG("length must be the same");
+    exit(-1);
+  } 
+
+  MAT_UNARY_FUNC(X, Y, [](decltype(X[0]) x,
+			  decltype(Y[0]) y){
+      y = x * x;
+    });
+}
+
+// Y = e^X
+template <class Dtype>
+void Mat_Exp(const Dtype& X, 
+	     Dtype& Y)
+{
+  int size = X.size();
+  if(size != Y.size()){
+    DEBUGMSG("length must be the same");
+    exit(-1);
+  } 
+
+  MAT_UNARY_FUNC(X, Y, [](decltype(X[0]) x,
+			  decltype(Y[0]) y){
+      y =  exp(x);
+    });
+}
+
+// Y = sqrt(X)
+template <class Dtype>
+void Mat_Sqrt(const Dtype& X, 
+	      Dtype& Y)
+{
+  int size = X.size();
+  if(size != Y.size()){
+    DEBUGMSG("length must be the same");
+    exit(-1);
+  } 
+
+  MAT_UNARY_FUNC(X, Y, [](decltype(X[0]) x, 
+			  decltype(Y[0]) y){
+      y = sqrt(x);
+    });
+}
+
+// Y = |X|
+template <class Dtype>
+void Mat_Abs(const Dtype& X, 
+	     Dtype& Y)
+{
+  int size = X.size();
+  if(size != Y.size()){
+    DEBUGMSG("length must be the same");
+    exit(-1);
+  } 
+
+  MAT_UNARY_FUNC(X, Y, [](decltype(X[0]) x,
+			  decltype(Y[0]) y){
+      y = fabs(x);
+    });
+}
+
+// Y = cos(X)
+template <class Dtype>
+void Mat_Cos(const Dtype& X, 
+	     Dtype& Y)
+{
+  int size = X.size();
+  if(size != Y.size()){
+    DEBUGMSG("length must be the same");
+    exit(-1);
+  } 
+
+  MAT_UNARY_FUNC(X, Y, [](decltype(X[0]) x,
+			  decltype(Y[0]) y){
+      y = cos(x);
+    });
+}
+
+// Y = sin(X)
+template <class Dtype>
+void Mat_Sin(const Dtype& X, 
+	     Dtype& Y)
+{
+  int size = X.size();
+  if(size != Y.size()){
+    DEBUGMSG("length must be the same");
+    exit(-1);
+  } 
+
+  MAT_UNARY_FUNC(X, Y, [](decltype(X[0]) x){
+      return sin(x);
+    });
+}
+
+// Y = X1 + X2
+template <class Dtype>
+void Mat_Add(const Dtype& X1, 
+	     const Dtype& X2, 
+	     Dtype& Y)
+{
+  int size = X1.size();					
+  if(size != X2.size() || size != Y.size()){		
+    DEBUGMSG("length must be the same");		
+    exit(-1);						
+  }
+
+  MAT_BINARY_FUNC(X1, X2, Y, [](decltype(X1[0]) x1,
+				decltype(X2[0]) x2,
+				decltype(Y[0]) y){
+		    y = x1+x2;
+		  });
+}
+
+// Y = X1 - X2
+template <class Dtype>
+void Mat_Sub(const Dtype& X1, 
+	     const Dtype& X2, 
+	     Dtype& Y)
+{
+  int size = X1.size();					
+  if(size != X2.size() || size != Y.size()){		
+    DEBUGMSG("length must be the same");		
+    exit(-1);						
+  }
+
+  MAT_BINARY_FUNC(X1, X2, Y, [](decltype(X1[0]) x1,
+				decltype(X2[0]) x2,
+				decltype(Y[0]) y){
+		    y = x1-x2;
+		  });
+}
+
+// Y = X1 * X2
+template <class Dtype>
+void Mat_Mul(const Dtype& X1, 
+	     const Dtype& X2, 
+	     Dtype& Y)
+{
+  int size = X1.size();					
+  if(size != X2.size() || size != Y.size()){		
+    DEBUGMSG("length must be the same");		
+    exit(-1);						
+  }
+
+  MAT_BINARY_FUNC(X1, X2, Y, []( decltype(X1[0]) x1,
+				 decltype(X2[0]) x2,
+				 decltype(*Y.data) y){
+		    y = x1*x2;
+		  });
+}
+
+// Y = X1/X2 
+template <class Dtype>
+void Mat_Div(const Dtype& X1, 
+	     const Dtype& X2, 
+	     Dtype& Y)
+{
+  int size = X1.size();					
+  if(size != X2.size() || size != Y.size()){		
+    DEBUGMSG("length must be the same");		
+    exit(-1);						
+  }
+
+  MAT_BINARY_FUNC(X1, X2, Y, [](decltype(X1[0]) x1,
+				decltype(X2[0]) x2,
+				decltype(Y[0]) y){
+		    y = x1/x2;
+		  });
+}
+
+// Y = X + alpha (vector)
+template <class Dtype>
+void Mat_Add(const vec1d<Dtype>& X,
+	     const Dtype& alpha,
+	     vec1d<Dtype>& Y)
+{
+  int size = X.size();
+  if(size != Y.size()){
+    DEBUGMSG("length must be the same");
+    exit(-1);
+  }
+
+  MAT_BINARY_FUNC_PARAM(X, alpha, Y, [](const Dtype& x, 
+					const Dtype& a,
+					Dtype& y){
+      y = x + a;
+    });
+}
+
+// Y = X - alpha (vector)
+template <class Dtype>
+void Mat_Sub(const vec1d<Dtype>& X,
+	     const Dtype& alpha,
+	     vec1d<Dtype>& Y)
+{
+  int size = X.size();
+  if(size != Y.size()){
+    DEBUGMSG("length must be the same");
+    exit(-1);
+  }
+
+  MAT_BINARY_FUNC_PARAM(X, alpha, Y, [](const Dtype& x, 
+					const Dtype& a,
+					Dtype& y){
+      y = x - a;
+    });
+}
+
+// Y = X * alpha (vector)
+template <class Dtype>
+void Mat_Mul(const vec1d<Dtype>& X,
+	     const Dtype& alpha,
+	     vec1d<Dtype>& Y)
+{
+  int size = X.size();
+  if(size != Y.size()){
+    DEBUGMSG("length must be the same");
+    exit(-1);
+  }
+
+  MAT_BINARY_FUNC_PARAM(X, alpha, Y, [](const Dtype& x, 
+					const Dtype& a,
+					Dtype& y){
+      y = x * a;
+    });
+}
+
 
 template <>
 void Mat_Mul<float>(const vec1d<float>& X,
@@ -32,6 +266,26 @@ void Mat_Mul<double>(const vec1d<double>& X,
   cblas_dscal(size, alpha, Y.data, 1);
 }
 
+// Y = X / alpha (vector)
+template <class Dtype>
+void Mat_Div(const vec1d<Dtype>& X,
+	     const Dtype& alpha,
+	     vec1d<Dtype>& Y)
+{
+  int size = X.size();
+  if(size != Y.size()){
+    DEBUGMSG("length must be the same");
+    exit(-1);
+  }
+
+  MAT_BINARY_FUNC_PARAM(X, alpha, Y, [](const Dtype& x, 
+					const Dtype& a,
+					Dtype& y){
+      y = x / a;
+    });
+}
+
+
 template <>
 void Mat_Div<float>(const vec1d<float>& X,
 		    const float& alpha,
@@ -62,6 +316,82 @@ void Mat_Div<double>(const vec1d<double>& X,
   cblas_dscal(size, double(1/alpha), Y.data, 1);
 }
 
+// Y = X + alpha (matrix)
+template <class Dtype>
+void Mat_Add(const mat2d<Dtype>& X,
+	     const Dtype& alpha,
+	     mat2d<Dtype>& Y)
+{
+}
+
+// Y = X - alpha (matrix)
+template <class Dtype>
+void Mat_Sub(const mat2d<Dtype>& X,
+	     const Dtype& alpha,
+	     mat2d<Dtype>& Y)
+{
+}
+
+// Y = X * alpha (matrix)
+template <class Dtype>
+void Mat_Mul(const mat2d<Dtype>& X,
+	     const Dtype& alpha,
+	     mat2d<Dtype>& Y)
+{
+}
+
+// Y = X / alpha (matrix)
+template <class Dtype>
+void Mat_Div(const mat2d<Dtype>& X,
+	     const Dtype& alpha,
+	     mat2d<Dtype>& Y)
+{
+}
+
+// X = X + alpha (vector)
+template <class Dtype>
+void Mat_Inc(vec1d<Dtype>& X,
+	     const Dtype& alpha)
+{
+  MAT_UNARY_FUNC(X, alpha, [](Dtype& x,
+			      const Dtype& alpha){
+		   x += alpha;
+		 });
+}
+
+
+// X = X * alpha
+template <class Dtype>
+void Mat_Scale(vec1d<Dtype>& X,
+	     const Dtype& alpha)
+{
+  MAT_UNARY_FUNC(X, alpha, [](Dtype& x,
+			      const Dtype& alpha){
+		   x *= alpha;
+		 });
+}
+
+// X = X + alpha
+template <class Dtype>
+void Mat_Inc(mat2d<Dtype>& X,
+	     const Dtype& alpha)
+{
+  MAT_UNARY_FUNC(X, alpha, [](Dtype& x,
+			      const Dtype& alpha){
+		   x += alpha;
+		 });
+}
+
+// X = X * alpha
+template <class Dtype>
+void Mat_Scale(mat2d<Dtype>& X,
+	     const Dtype& alpha)
+{
+  MAT_UNARY_FUNC(X, alpha, [](Dtype& x,
+			      const Dtype& alpha){
+		   x *= alpha;
+		 });
+}
 
 //----------------------level 1-----------------------
 
@@ -239,8 +569,15 @@ T Mat_Sum(const vec1d<T>& X)
 
 #pragma omp parallel for reduction(+:s) if(size > 300)  
   for(int i = 0; i < size; ++i)
-    s += i;
-
+    s += X[i];
 
   return s;
 }
+
+template <class T>
+T Mat_Mean(const vec1d<T>& X)
+{
+  return Mat_Sum(X)/X.size();
+}
+
+

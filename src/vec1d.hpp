@@ -1,3 +1,14 @@
+/*!
+ * \file vec1d.hpp
+ * \breif 1-dim vector is defined and implemented in this file.
+ *   The vec1d supports range index, slice operations.
+ *   To manage the memory effectively, reference count trick is used here.
+ *
+ * \author Shaoguang Cheng. From Xi'an, China
+ * \date   1/2/2015
+ */
+
+
 #ifndef __VEC1D__
 #define __VEC1D__
 
