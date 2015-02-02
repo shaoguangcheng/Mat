@@ -13,6 +13,8 @@
 #include <cstdlib>
 #include <string.h>
 #include <assert.h>
+#include <vector>
+#include <algorithm>
 
 #ifndef DEBUGMSG
 #define DEBUGMSG(msg) std::cout << "line: " << __LINE__	\

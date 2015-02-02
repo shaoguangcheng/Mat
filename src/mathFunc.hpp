@@ -2,7 +2,7 @@
  * \file mathFunc.hpp
  * \breif Some vector and matrix functions are implemented in this 
  * file. The low level operations are based on cblas due to the efficiency
- * reason.
+ * reason. OpenMp is also used but not optimized yet.
  *
  * \author Shaoguang Cheng. From Xi'an, China
  * \date   1/2/2015
@@ -330,6 +330,8 @@ template <class T>
 void Mat_Min(const vec1d<T>& X, T& m, int& index);
 
 //---------------------level 2--------------------------
+
+//---------------------level 3--------------------------
 
 #include "mathFunc.cpp"
 #endif // end of math_func

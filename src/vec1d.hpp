@@ -35,9 +35,12 @@ public:
   vec1d(int n, const T* data_ = NULL);
 
   // create val with n elements and initailize it with val
-  vec1d(int n, T val);
+  vec1d(int n, const T& val);
 
   vec1d(const vec1d<T>& v);
+
+  vec1d(const std::vector<T>& v);
+
   ~vec1d();
   
   vec1d<T>& operator = (const vec1d<T>& v);
@@ -51,6 +54,10 @@ public:
   inline const T& operator () (int index) const;
   inline vec1d<T> operator () (int start, int end) const;
   inline vec1d<T> range(int start, int end) const;
+
+  bool operator == (const vec1d<T>& v) const;
+ 
+  std::vector<T> toVector()const;
 
   inline int size() const {return nElem;}
   inline int ref() const {return *refCount;}

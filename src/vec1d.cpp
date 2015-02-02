@@ -22,7 +22,7 @@ vec1d<T>::vec1d(int n, const T* data_)
 }
 
 template <class T>
-vec1d<T>::vec1d(int n, T val) 
+vec1d<T>::vec1d(int n, const T& val) 
   : nElem(n), refCount(new int(1)), data(new T[nElem])
 {
   if(n <= 0){
@@ -33,6 +33,15 @@ vec1d<T>::vec1d(int n, T val)
   assert(data != NULL);
   for(int i = 0; i < nElem; ++i)
     data[i] = val;
+}
+
+template <class T>
+vec1d<T>::vec1d(const std::vector<T>& v)
+  : nElem(v.size()), refCount(new int(1)), data(new T [nElem])
+{
+  if(nElem > 0){
+    std::copy(v.begin(), v.end(), data);
+  }
 }
 
 template <class T>
@@ -151,6 +160,30 @@ template <class T>
 vec1d<T> vec1d<T>::range(int start, int end) const
 {
   return (*this)(start, end);
+}
+
+template <class T>
+bool vec1d<T>::operator == (const vec1d<T>& v) const
+{
+  if(nElem != v.size())
+    return false;
+
+  for(int i = 0; i < nElem; ++i)
+    if(!equal(data[i], v[i]))
+      return false;
+
+  return true;
+}
+
+template <class T>
+std::vector<T> vec1d<T>::toVector() const
+{
+  if(nElem == 0)
+    return *(new std::vector<T>);
+  
+  std::vector<T> v(data, data + nElem);
+  
+  return v;
 }
 
 template <class T>
