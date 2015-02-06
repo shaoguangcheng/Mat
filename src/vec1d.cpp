@@ -1,12 +1,12 @@
 
 template <class T>
 vec1d<T>::vec1d() 
-  : nElem(0), refCount(new int(1)), data(NULL)
+  : nElem(0), data(NULL)
 {}
 
 template <class T>
 vec1d<T>::vec1d(int n, const T* data_)
-  : nElem(n), refCount(new int(1)), data(new T [nElem])
+  : nElem(n), data(new T [nElem])
 {
   if(n <= 0){
     DEBUGMSG("size must be positive");
@@ -23,7 +23,7 @@ vec1d<T>::vec1d(int n, const T* data_)
 
 template <class T>
 vec1d<T>::vec1d(int n, const T& val) 
-  : nElem(n), refCount(new int(1)), data(new T[nElem])
+  : nElem(n), data(new T[nElem])
 {
   if(n <= 0){
     DEBUGMSG("size must be positive");
@@ -37,7 +37,7 @@ vec1d<T>::vec1d(int n, const T& val)
 
 template <class T>
 vec1d<T>::vec1d(const std::vector<T>& v)
-  : nElem(v.size()), refCount(new int(1)), data(new T [nElem])
+  : nElem(v.size()), data(new T [nElem])
 {
   if(nElem > 0){
     std::copy(v.begin(), v.end(), data);
@@ -47,41 +47,30 @@ vec1d<T>::vec1d(const std::vector<T>& v)
 template <class T>
 vec1d<T>::~vec1d()
 {
-  decreaseUse();
+  if(use.only())
+    delete [] data;
 }
 
 template <class T>
 vec1d<T>::vec1d(const vec1d<T>& v)
-  : nElem(v.size()), refCount(v.refCount), data(v.data)
+  : nElem(v.size()), use(v.use), data(v.data)
 {
-  ++(*refCount);
 }
 
 template <class T>
 vec1d<T>& vec1d<T>::operator = (const vec1d<T>& v)
 {
   if(this != &v){
-    decreaseUse();
-    ++(*(v.refCount));
-    nElem = v.size();
-    refCount = v.refCount;
+    if(use.reattach(v.use)){
+      delete [] data;
+      data = NULL;
+    }
+    
+    nElem = v.nElem;
     data = v.data;
   }
 
   return *this;
-}
-
-template <class T>
-void vec1d<T>::decreaseUse()
-{
-  if(*refCount == 1){
-    delete [] data;
-    delete refCount;
-    data = NULL;
-    refCount = NULL;
-  }
-  else
-    --(*refCount);
 }
 
 template <class T>

@@ -22,5 +22,45 @@
   << ", message: " << msg << std::endl
 #endif // end of debugmsg
 
+class useCount
+{
+ private:
+  int *n;
+  
+ public:
+ useCount() :  n(new int(1)) {}
+ useCount(const useCount& u) : n(u.n){++*n;}
+  ~useCount(){
+    if(--*n == 0) 
+      delete n;
+  }
+
+  bool only() const {
+    if(*n == 1)
+      return true;
+    else
+      return false;
+  }
+
+  bool reattach(const useCount& u){
+    ++*u.n;
+    if(1 == --*n){
+      delete n;
+      n = NULL;
+      n = u.n;
+      return true;
+    }
+
+    n = u.n;
+    return false;
+  }
+
+  int getCount() const{
+    return *n;
+  }
+
+ private:
+  useCount& operator = (const useCount& u);
+};
 
 #endif // end of global

@@ -14,7 +14,7 @@
 #include "global.h"
 
 template <class T>
-class vec1d;
+class mat2d;
 template <class T>
 std::ostream& operator << (std::ostream& out, const mat2d<T>& m);
 
@@ -23,15 +23,16 @@ class mat2d{
 private:
   int nCol;
   int nRow;
+  int nElem;
+  useCount use;
 
 public:
-  int* refCount;
   T* data;
 
 public:
   mat2d();
   mat2d(int rows, int cols, T* data_ = NULL);
-  mat2d(int rows, int cols, const T& val)
+  mat2d(int rows, int cols, const T& val);
   mat2d(const mat2d<T>& m);
   ~mat2d();
 
@@ -41,6 +42,8 @@ public:
   mat2d<T>& operator = (const mat2d<T>& m);
   mat2d<T> deepCopy() const;
 
+  inline const T* & operator [] (int index) const;
+  inline  T* & operator [] (int index);
   inline T& operator () (int indexX, int indexY);
   inline const T& operator () (int indexX, int indexY) const;
   
@@ -53,18 +56,15 @@ public:
 
   vec1d<T> row(int index) const;
   vec1d<T> col(int index) const;
-  mat2d<T> rowRange(int start, int end, int inc = 1) const;
-  mat2d<T> colRange(int start, int end, int inc = 1) const;
+  mat2d<T> rowRange(int start, int end) const;
+  mat2d<T> colRange(int start, int end) const;
   mat2d<T> subMat(int leftUpperX, int leftUpperY, 
-		  int rightUpperX, int rightUpperY) const;
+		  int rightBottomX, int rightBottomY) const;
   
   bool operator == (const mat2d<T>& m) const;
   
   friend std::ostream& operator << <T> (std::ostream& out, const mat2d<T>& v);
   void print(char sep = ' ') const;
-
-private:
-  void decreaseUse();
 };
 
 

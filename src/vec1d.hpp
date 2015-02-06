@@ -23,9 +23,9 @@ template <class T>
 class vec1d{
 private:
   int nElem;
+  useCount use;
 
 public:
-  int* refCount;
   T* data;
   
 public:
@@ -60,13 +60,11 @@ public:
   std::vector<T> toVector()const;
 
   inline int size() const {return nElem;}
-  inline int ref() const {return *refCount;}
+  inline int ref() const {return use.getCount();}
  
   friend std::ostream& operator << <T>(std::ostream& out, const vec1d<T>& v);
   void print(char sep = ' ') const;
 
-private:
-  void decreaseUse();
 };
 
 #include "vec1d.cpp"
