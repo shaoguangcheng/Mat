@@ -44,6 +44,8 @@ public:
 
   inline const T* & operator [] (int index) const;
   inline  T* & operator [] (int index);
+  inline T& operator () (int index);
+  inline const T& operator () (int index) const;
   inline T& operator () (int indexX, int indexY);
   inline const T& operator () (int indexX, int indexY) const;
   
