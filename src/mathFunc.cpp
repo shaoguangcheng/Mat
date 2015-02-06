@@ -459,6 +459,18 @@ void Mat_Add(const mat2d<Dtype>& X,
 	     const Dtype& alpha,
 	     mat2d<Dtype>& Y)
 {
+  int nRow = X.rows();
+  int nCol = X.cols();
+  if(nRow != Y.rows() || nCol != Y.cols()){
+    DEBUGMSG("matrix size can not match");
+    exit(-1);
+  }
+
+  MAT_BINARY_FUNC(X, alpha, Y, [](const Dtype& x, 
+				  const Dtype& a,
+				  Dtype& y){
+		    y = x + a;
+		  });
 }
 
 // Y = X - alpha (matrix)
@@ -467,6 +479,18 @@ void Mat_Sub(const mat2d<Dtype>& X,
 	     const Dtype& alpha,
 	     mat2d<Dtype>& Y)
 {
+  int nRow = X.rows();
+  int nCol = X.cols();
+  if(nRow != Y.rows() || nCol != Y.cols()){
+    DEBUGMSG("matrix size can not match");
+    exit(-1);
+  }
+
+  MAT_BINARY_FUNC(X, alpha, Y, [](const Dtype& x, 
+				  const Dtype& a,
+				  Dtype& y){
+		    y = x - a;
+		  });
 }
 
 // Y = X * alpha (matrix)
@@ -475,7 +499,54 @@ void Mat_Mul(const mat2d<Dtype>& X,
 	     const Dtype& alpha,
 	     mat2d<Dtype>& Y)
 {
+  int nRow = X.rows();
+  int nCol = X.cols();
+  if(nRow != Y.rows() || nCol != Y.cols()){
+    DEBUGMSG("matrix size can not match");
+    exit(-1);
+  }
+
+  MAT_BINARY_FUNC(X, alpha, Y, [](const Dtype& x, 
+				  const Dtype& a,
+				  Dtype& y){
+		    y = x * a;
+		  });  
 }
+
+template <>
+void Mat_Mul<float>(const mat2d<float>& X,
+		    const float& alpha,
+		    mat2d<float>& Y)
+{
+  int size = X.size();
+  int nRow = X.rows();
+  int nCol = X.cols();
+  if(nRow != Y.rows() || nCol != Y.cols()){
+    DEBUGMSG("matrix size can not match");
+    exit(-1);
+  }
+
+  cblas_scopy(size, X.data, 1, Y.data, 1);
+  cblas_sscal(size, float(alpha), Y.data, 1);
+}
+
+template <>
+void Mat_Mul<double>(const mat2d<double>& X,
+		    const double& alpha,
+		    mat2d<double>& Y)
+{
+  int size = X.size();
+  int nRow = X.rows();
+  int nCol = X.cols();
+  if(nRow != Y.rows() || nCol != Y.cols()){
+    DEBUGMSG("matrix size can not match");
+    exit(-1);
+  }
+
+  cblas_dcopy(size, X.data, 1, Y.data, 1);
+  cblas_dscal(size, double(alpha), Y.data, 1);
+}
+
 
 // Y = X / alpha (matrix)
 template <class Dtype>
@@ -483,6 +554,52 @@ void Mat_Div(const mat2d<Dtype>& X,
 	     const Dtype& alpha,
 	     mat2d<Dtype>& Y)
 {
+  int nRow = X.rows();
+  int nCol = X.cols();
+  if(nRow != Y.rows() || nCol != Y.cols()){
+    DEBUGMSG("matrix size can not match");
+    exit(-1);
+  }
+
+  MAT_BINARY_FUNC(X, alpha, Y, [](const Dtype& x, 
+				  const Dtype& a,
+				  Dtype& y){
+		    y = x / a;
+		  });  
+}
+
+template <>
+void Mat_Div<float>(const mat2d<float>& X,
+		    const float& alpha,
+		    mat2d<float>& Y)
+{
+  int size = X.size();
+  int nRow = X.rows();
+  int nCol = X.cols();
+  if(nRow != Y.rows() || nCol != Y.cols()){
+    DEBUGMSG("matrix size can not match");
+    exit(-1);
+  }
+
+  cblas_scopy(size, X.data, 1, Y.data, 1);
+  cblas_sscal(size, float(1/alpha), Y.data, 1);
+}
+
+template <>
+void Mat_Div<double>(const mat2d<double>& X,
+		    const double& alpha,
+		    mat2d<double>& Y)
+{
+  int size = X.size();
+  int nRow = X.rows();
+  int nCol = X.cols();
+  if(nRow != Y.rows() || nCol != Y.cols()){
+    DEBUGMSG("matrix size can not match");
+    exit(-1);
+  }
+
+  cblas_dcopy(size, X.data, 1, Y.data, 1);
+  cblas_dscal(size, double(1/alpha), Y.data, 1);
 }
 
 // X = X + alpha (vector)
@@ -758,3 +875,119 @@ void Mat_Min(const vec1d<T>& X, T& m, int& index)
 //---------------------level 2------------------------
 
 //---------------------level 3------------------------
+template <>
+void Mat_Scale<float>(mat2d<float>& X,
+		      const float& alpha)
+{
+  cblas_sscal(X.size(), alpha, X.data, 1);
+}
+
+template <>
+void Mat_Scale<double>(mat2d<double>& X, 
+		       const double& alpha)
+{
+  cblas_dscal(X.size(), alpha, X.data, 1);
+}
+
+template <class T>
+void Mat_axpy(const mat2d<T>& X, 
+	      const T& alpha,
+	      mat2d<T>& Y)
+{
+  int nRow = X.rows();
+  int nCol = X.cols();
+  if(nRow != Y.rows() || nCol != Y.cols()){
+    DEBUGMSG("matrix size can not match");
+    exit(-1);
+  }
+  
+  mat2d<T> Z(nRow, nCol);
+
+  Mat_Mul(X, alpha, Z);
+  Mat_Add(Z, Y, Y);
+}
+
+template <>
+void Mat_axpy<float>(const mat2d<float>& X, 
+		     const float& alpha, 
+		     mat2d<float>& Y)
+{
+  int size = X.size();
+  int nRow = X.rows();
+  int nCol = X.cols();
+  if(nRow != Y.rows() || nCol != Y.cols()){
+    DEBUGMSG("matrix size can not match");
+    exit(-1);
+  }
+
+  cblas_saxpy(size, alpha, X.data, 1, Y.data, 1);
+}
+
+template <>
+void Mat_axpy<double>(const mat2d<double>& X, 
+		      const double& alpha, 
+		      mat2d<double>& Y)
+{
+  int size = X.size();
+  int nRow = X.rows();
+  int nCol = X.cols();
+  if(nRow != Y.rows() || nCol != Y.cols()){
+    DEBUGMSG("matrix size can not match");
+    exit(-1);
+  }
+
+  cblas_daxpy(size, alpha, X.data, 1, Y.data, 1);
+}
+
+template <class T>
+void Mat_axpby(const mat2d<T>& X, 
+	       const T& alpha, 
+	       mat2d<T>& Y, 
+	       const T& beta)
+{
+  int nRow = X.rows();
+  int nCol = X.cols();
+  if(nRow != Y.rows() || nCol != Y.cols()){
+    DEBUGMSG("matrix size can not match");
+    exit(-1);
+  }
+  
+  Mat_Scale(Y, beta);
+  Mat_axpy(X, alpha, Y);
+}
+
+template <>
+void Mat_axpby<float>(const mat2d<float>& X,
+		      const float& alpha,
+		      mat2d<float>& Y,
+		      const float& beta)
+{
+  int size = X.size();
+  int nRow = X.rows();
+  int nCol = X.cols();
+  if(nRow != Y.rows() || nCol != Y.cols()){
+    DEBUGMSG("matrix size can not match");
+    exit(-1);
+  }
+
+  cblas_sscal(size, beta, Y.data, 1);
+  cblas_saxpy(size, alpha, X.data, 1, Y.data, 1);
+}
+
+template <>
+void Mat_axpby<double>(const mat2d<double>& X,
+		      const double& alpha,
+		      mat2d<double>& Y,
+		      const double& beta)
+{
+  int size = X.size();
+  int nRow = X.rows();
+  int nCol = X.cols();
+  if(nRow != Y.rows() || nCol != Y.cols()){
+    DEBUGMSG("matrix size can not match");
+    exit(-1);
+  }
+
+  cblas_dscal(size, beta, Y.data, 1);
+  cblas_daxpy(size, alpha, X.data, 1, Y.data, 1);
+}

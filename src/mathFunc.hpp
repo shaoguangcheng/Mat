@@ -333,5 +333,15 @@ void Mat_Min(const vec1d<T>& X, T& m, int& index);
 
 //---------------------level 3--------------------------
 
+// Y = alpha*X + Y
+template <class T>
+void Mat_axpy(const mat2d<T>& X, const T& alpha, mat2d<T>& Y);
+
+// Y = alpha*X + beta*Y
+template <class T>
+void Mat_axpby(const mat2d<T>& X, const T& alpha, 
+	       mat2d<T>& Y,const T& beta);
+
+
 #include "mathFunc.cpp"
 #endif // end of math_func
