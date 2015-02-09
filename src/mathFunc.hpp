@@ -17,18 +17,8 @@
 #include <cblas.h>
 #include <math.h>
 
-// used to represent transpose operations on a matrix
-enum MAT_TRANSPOSE{
-  MatNoTrans = 111, // for compatible with cblas
-  MatTrans = 112,
-  MatConjTrans = 113
-};
-
-// used to indicate the order of mat-mat multiply
-enum MAT_SIDE{
-  MatLeft = 141,
-  MatRight = 142
-};
+#define MAT(X) const enum CBLAS_##X
+#define Mat(X) Cblas##X 
 
 //----------------------level 0--------------------------
 
@@ -342,6 +332,75 @@ template <class T>
 void Mat_axpby(const mat2d<T>& X, const T& alpha, 
 	       mat2d<T>& Y,const T& beta);
 
+// C = alpha*op(A)*op(B)+beta*C
+// op(A) = {A, A.t, A.h}
+template <class T>
+void Mat_gemm(MAT(TRANSPOSE) transA,
+	      MAT(TRANSPOSE) transB,
+	      const mat2d<T>& A,
+	      const mat2d<T>& B,
+	      const T& alpha,
+	      const T& beta,
+	      mat2d<T>& C);
+
+// C = alpha*A*B+beta*C
+// or
+// C = alpha*B*A+beta*C 
+// where A = A.t
+template <class T>
+void Mat_symm(MAT(SIDE) sideA,
+	      MAT(UPLO) uploA,
+	      const mat2d<T>& A,
+	      const mat2d<T>& B,
+	      const T& alpha,
+	      const T& beta,
+	      mat2d<T>& C);
+
+// C = alpha*A*A'+beta*C (noTrans) 
+// or
+// C = alpha*A'*A+beta*C (Trans)
+// where C is n by n
+// where c is an n-by-n symmetric matrix; 
+// a is an n-by-k matrix, if trans = 'N'or'n', 
+// a is a k-by-n matrix, if trans = 'T'or't','C'or'c'
+template <class T>
+void Mat_syrk(MAT(UPLO) uploA,
+	      MAT(TRANSPOSE) transA,
+	      const mat2d<T>& A,
+	      const T& alpha,
+	      const T& beta,
+	      mat2d<T>& C);
+
+// B = alpha*op(A)*B
+// or
+// B = alpha*B*op(A)
+// where op(A) = {A, A', Ah}. B is m by n
+// where b is an m-by-n general matrix, and a is triangular; 
+// op(a) must be an m-by-m matrix, if side = 'L'or'l' 
+// op(a) must be an n-by-n matrix, if side = 'R'or'r
+template <class T>
+void Mat_trmm(MAT(SIDE) sideA,
+	      MAT(UPLO) uploA,
+	      MAT(TRANSPOSE) transA,
+	      const mat2d<T>& A,
+	      const T& alpha,
+	      mat2d<T>& B);
+
+// B = alpha*op(A(-1))*B
+// or
+// B = alpha*B*op(A(-1))
+// where op(A) = {A, A', Ah}
+// op(a)*x = alpha*b  or  x*op(a) = alpha*b, 
+// where x and b are m-by-n general matrices, and a is triangular; 
+// op(a) must be an m-by-m matrix, if side = 'L'or'l' 
+// op(a) must be an n-by-n matrix, if side = 'R'or'r'.
+template <class T>
+void Mat_trsm(MAT(SIDE) sideA,
+	      MAT(UPLO) uploA,
+	      MAT(TRANSPOSE) transA,
+	      const mat2d<T>& A,
+	      const T& alpha,
+	      mat2d<T>& B);
 
 #include "mathFunc.cpp"
 #endif // end of math_func
