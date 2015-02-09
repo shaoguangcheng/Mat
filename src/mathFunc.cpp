@@ -875,6 +875,192 @@ void Mat_Min(const vec1d<T>& X, T& m, int& index)
 }
 
 //---------------------level 2------------------------
+template <>
+void Mat_gemv<float>(MAT(TRANSPOSE) transA,
+		     const mat2d<float>& A,
+		     const vec1d<float>& x,
+		     const float& alpha,
+		     const float& beta,
+		     vec1d<float>& y)
+{
+  int N = A.cols();
+  
+  cblas_sgemv(Mat(RowMajor), transA, A.rows(), N, alpha,
+	      A.data, N, x.data, 1, beta, y.data, 1);
+}
+
+template <>
+void Mat_gemv<double>(MAT(TRANSPOSE) transA,
+		      const mat2d<double>& A,
+		      const vec1d<double>& x,
+		      const double& alpha,
+		      const double& beta,
+		      vec1d<double>& y)
+{
+  int N = A.cols();
+  
+  cblas_dgemv(Mat(RowMajor), transA, A.rows(), N, alpha,
+	      A.data, N, x.data, 1, beta, y.data, 1);
+}
+
+template <>
+void Mat_symv<float>(MAT(UPLO) uploA,
+	      const mat2d<float>& A,
+	      const vec1d<float>& x,
+	      const float& alpha,
+	      const float& beta,
+	      vec1d<float>& y)
+{
+  int N = A.rows();
+
+  cblas_ssymv(Mat(RowMajor), uploA, N, alpha, A.data, N,
+	      x.data, 1, beta, y.data, 1);
+}
+
+template <>
+void Mat_symv<double>(MAT(UPLO) uploA,
+		      const mat2d<double>& A,
+		      const vec1d<double>& x,
+		      const double& alpha,
+		      const double& beta,
+		      vec1d<double>& y)
+{
+  int N = A.rows();
+
+  cblas_dsymv(Mat(RowMajor), uploA, N, alpha, A.data, N,
+	      x.data, 1, beta, y.data, 1);
+}
+
+
+template <>
+void Mat_syr<float>(MAT(UPLO) uploA,
+		    const vec1d<float>& x,
+		    const float& alpha,
+		    mat2d<float>& A)
+{
+  int N = A.rows();
+
+  cblas_ssyr(Mat(RowMajor), uploA, N, alpha, x.data, 1, A.data, N);
+}
+
+template <>
+void Mat_syr<double>(MAT(UPLO) uploA,
+		     const vec1d<double>& x,
+		     const double& alpha,
+		     mat2d<double>& A)
+{
+  int N = A.rows();
+
+  cblas_dsyr(Mat(RowMajor), uploA, N, alpha, x.data, 1, A.data, N);
+}
+
+template <>
+void Mat_syr2<float>(MAT(UPLO) uploA,
+		     const vec1d<float>& x,
+		     const vec1d<float>& y,
+		     const float& alpha,
+		     mat2d<float>& A)
+{
+  int N = A.rows();
+
+  cblas_ssyr2(Mat(RowMajor), uploA, N, alpha, x.data, 1, y.data, 1, 
+	     A.data, N);
+}
+
+template <>
+void Mat_syr2<double>(MAT(UPLO) uploA,
+		      const vec1d<double>& x,
+		      const vec1d<double>& y,
+		      const double& alpha,
+		      mat2d<double>& A)
+{
+  int N = A.rows();
+
+  cblas_dsyr2(Mat(RowMajor), uploA, N, alpha, x.data, 1, y.data, 1,
+	      A.data, N);
+}
+
+template <>
+void Mat_ger<float>(const vec1d<float>& x,
+		    const vec1d<float>& y,
+		    const float& alpha,
+		    mat2d<float>& A)
+{
+  int N = A.cols();
+
+  cblas_sger(Mat(RowMajor), A.rows(), N, alpha, x.data, 1, y.data, 1,
+	     A.data, N);
+}
+
+template <>
+void Mat_ger<double>(const vec1d<double>& x,
+		    const vec1d<double>& y,
+		    const double& alpha,
+		    mat2d<double>& A)
+{
+  int N = A.cols();
+
+  cblas_dger(Mat(RowMajor), A.rows(), N, alpha, x.data, 1, y.data, 1,
+	     A.data, N);
+}
+
+template <>
+void Mat_trmv<float>(MAT(UPLO) uploA,
+	      MAT(TRANSPOSE) transA,
+	      MAT(DIAG) diagA,
+	      const mat2d<float>& A,
+	      vec1d<float>& x)
+{
+  int N = x.size();
+  int lda = (transA == Mat(NoTrans)) ? A.cols() : A.rows();
+
+  cblas_strmv(Mat(RowMajor), uploA, transA, diagA, N, A.data, lda, 
+	      x.data, 1);
+}
+
+template <>
+void Mat_trmv<double>(MAT(UPLO) uploA,
+	      MAT(TRANSPOSE) transA,
+	      MAT(DIAG) diagA,
+	      const mat2d<double>& A,
+	      vec1d<double>& x)
+{
+  int N = x.size();
+  int lda = (transA == Mat(NoTrans)) ? A.cols() : A.rows();
+
+  cblas_dtrmv(Mat(RowMajor), uploA, transA, diagA, N, A.data, lda, 
+	      x.data, 1);
+}
+
+
+template <>
+void Mat_trsv<float>(MAT(UPLO) uploA,
+	      MAT(TRANSPOSE) transA,
+	      MAT(DIAG) diagA,
+	      const mat2d<float>& A,
+	      vec1d<float>& x)
+{
+  int N = x.size();
+  int lda = (transA == Mat(NoTrans)) ? A.cols() : A.rows();
+
+  cblas_strsv(Mat(RowMajor), uploA, transA, diagA, N, A.data, lda, 
+	      x.data, 1);
+}
+
+template <>
+void Mat_trsv<double>(MAT(UPLO) uploA,
+	      MAT(TRANSPOSE) transA,
+	      MAT(DIAG) diagA,
+	      const mat2d<double>& A,
+	      vec1d<double>& x)
+{
+  int N = x.size();
+  int lda = (transA == Mat(NoTrans)) ? A.cols() : A.rows();
+
+  cblas_dtrsv(Mat(RowMajor), uploA, transA, diagA, N, A.data, lda, 
+	      x.data, 1);
+}
+
 
 //---------------------level 3------------------------
 template <>
@@ -997,11 +1183,11 @@ void Mat_axpby<double>(const mat2d<double>& X,
 template <>
 void Mat_gemm<float>(MAT(TRANSPOSE) transA,
 		     MAT(TRANSPOSE) transB,
-	      const mat2d<float>& A,
-	      const mat2d<float>& B,
-	      const float& alpha,
-	      const float& beta,
-	      mat2d<float>& C)
+		     const mat2d<float>& A,
+		     const mat2d<float>& B,
+		     const float& alpha,
+		     const float& beta,
+		     mat2d<float>& C)
 {
   int M = A.rows();
   int N = B.cols();
@@ -1054,12 +1240,12 @@ void Mat_symm<float>(MAT(SIDE) sideA,
 
 template <>
 void Mat_symm<double>(MAT(SIDE) sideA,
-	      MAT(UPLO) uploA,
-	      const mat2d<double>& A,
-	      const mat2d<double>& B,
-	      const double& alpha,
-	      const double& beta,
-	      mat2d<double>& C)
+		      MAT(UPLO) uploA,
+		      const mat2d<double>& A,
+		      const mat2d<double>& B,
+		      const double& alpha,
+		      const double& beta,
+		      mat2d<double>& C)
 {
   int M = B.rows();
   int N = B.cols();
@@ -1072,11 +1258,11 @@ void Mat_symm<double>(MAT(SIDE) sideA,
 
 template <>
 void Mat_syrk<float>(MAT(UPLO) uploA,
-	      MAT(TRANSPOSE) transA,
-	      const mat2d<float>& A,
-	      const float& alpha,
-	      const float& beta,
-	      mat2d<float>& C)
+		     MAT(TRANSPOSE) transA,
+		     const mat2d<float>& A,
+		     const float& alpha,
+		     const float& beta,
+		     mat2d<float>& C)
 {
   int K = A.cols();
   int N = A.rows();
@@ -1089,11 +1275,11 @@ void Mat_syrk<float>(MAT(UPLO) uploA,
 
 template <>
 void Mat_syrk<double>(MAT(UPLO) uploA,
-	      MAT(TRANSPOSE) transA,
-	      const mat2d<double>& A,
-	      const double& alpha,
-	      const double& beta,
-	      mat2d<double>& C)
+		      MAT(TRANSPOSE) transA,
+		      const mat2d<double>& A,
+		      const double& alpha,
+		      const double& beta,
+		      mat2d<double>& C)
 {
   int K = A.cols();
   int N = A.rows();
@@ -1106,11 +1292,12 @@ void Mat_syrk<double>(MAT(UPLO) uploA,
 
 template <>
 void Mat_trmm<float>(MAT(SIDE) sideA,
-	      MAT(UPLO) uploA,
-	      MAT(TRANSPOSE) transA,
-	      const mat2d<float>& A,
-	      const float& alpha,
-	      mat2d<float>& B)
+		     MAT(UPLO) uploA,
+		     MAT(TRANSPOSE) transA,
+		     MAT(DIAG) diagA,
+		     const mat2d<float>& A,
+		     const float& alpha,
+		     mat2d<float>& B)
 {
   int M = B.rows();
   int N = B.cols();
@@ -1118,17 +1305,18 @@ void Mat_trmm<float>(MAT(SIDE) sideA,
   int lda = (sideA == Mat(Left)) ? M : N;
 
   // what does CBLAS_DIAG mean here?
-  cblas_strmm(Mat(RowMajor), sideA, uploA, transA, Mat(NonUnit), M, N,
+  cblas_strmm(Mat(RowMajor), sideA, uploA, transA, diagA, M, N,
 	      alpha, A.data, lda, B.data, N);
 }
 
 template <>
 void Mat_trmm<double>(MAT(SIDE) sideA,
-	      MAT(UPLO) uploA,
-	      MAT(TRANSPOSE) transA,
-	      const mat2d<double>& A,
-	      const double& alpha,
-	      mat2d<double>& B)
+		      MAT(UPLO) uploA,
+		      MAT(TRANSPOSE) transA,
+		      MAT(DIAG) diagA,
+		      const mat2d<double>& A,
+		      const double& alpha,
+		      mat2d<double>& B)
 {
   int M = B.rows();
   int N = B.cols();
@@ -1136,17 +1324,18 @@ void Mat_trmm<double>(MAT(SIDE) sideA,
   int lda = (sideA == Mat(Left)) ? M : N;
 
   // what does CBLAS_DIAG mean here?
-  cblas_dtrmm(Mat(RowMajor), sideA, uploA, transA, Mat(NonUnit), M, N,
+  cblas_dtrmm(Mat(RowMajor), sideA, uploA, transA, diagA, M, N,
 	       alpha, A.data, lda, B.data, N);
 }
 
 template <>
 void Mat_trsm<float>(MAT(SIDE) sideA,
-	      MAT(UPLO) uploA,
-	      MAT(TRANSPOSE) transA,
-	      const mat2d<float>& A,
-	      const float& alpha,
-	      mat2d<float>& B)
+		     MAT(UPLO) uploA,
+		     MAT(TRANSPOSE) transA,
+		     MAT(DIAG) diagA,
+		     const mat2d<float>& A,
+		     const float& alpha,
+		     mat2d<float>& B)
 {
   int M = B.rows();
   int N = B.cols();
@@ -1154,17 +1343,18 @@ void Mat_trsm<float>(MAT(SIDE) sideA,
   int lda = (sideA == Mat(Left)) ? M : N;
 
   //  what does cblas_diag means here ?
-  cblas_strsm(Mat(RowMajor), sideA, uploA, transA, Mat(NonUnit), M, N,
+  cblas_strsm(Mat(RowMajor), sideA, uploA, transA, diagA, M, N,
   	      alpha, A.data, lda, B.data, N);
 }
 
 template <>
 void Mat_trsm<double>(MAT(SIDE) sideA,
-	      MAT(UPLO) uploA,
-	      MAT(TRANSPOSE) transA,
-	      const mat2d<double>& A,
-	      const double& alpha,
-	      mat2d<double>& B)
+		      MAT(UPLO) uploA,
+		      MAT(TRANSPOSE) transA,
+		      MAT(DIAG) diagA,
+		      const mat2d<double>& A,
+		      const double& alpha,
+		      mat2d<double>& B)
 {
   int M = B.rows();
   int N = B.cols();
@@ -1172,7 +1362,7 @@ void Mat_trsm<double>(MAT(SIDE) sideA,
   int lda = (sideA == Mat(Left)) ? M : N;
 
   //  what does cblas_diag means here ?
-  cblas_dtrsm(Mat(RowMajor), sideA, uploA, transA, Mat(NonUnit), M, N,
+  cblas_dtrsm(Mat(RowMajor), sideA, uploA, transA, diagA, M, N,
   	      alpha, A.data, lda, B.data, N);
 }
 

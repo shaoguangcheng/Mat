@@ -320,6 +320,70 @@ template <class T>
 void Mat_Min(const vec1d<T>& X, T& m, int& index);
 
 //---------------------level 2--------------------------
+// y = alpha*A*x+beta*y
+template <class T>
+void Mat_gemv(MAT(TRANSPOSE) transA,
+	       const mat2d<T>& A,
+	       const vec1d<T>& x,
+	       const T& alpha,
+	       const T& beta,
+	       vec1d<T>& y);
+
+
+// y = alpha*A*x+beta*y
+// A is a symmetric matrix
+// Here a is an n-by-n symmetric matrix; x and y are n-element vectors, alpha and beta are scalars
+template <class T>
+void Mat_symv(MAT(UPLO) uploA,
+	      const mat2d<T>& A,
+	      const vec1d<T>& x,
+	      const T& alpha,
+	      const T& beta,
+	      vec1d<T>& y);
+
+// A = alpha*x*x'+A
+// A is a sym matrix
+template <class T>
+void Mat_syr(MAT(UPLO) uploA,
+	     const vec1d<T>& x,
+	     const T& alpha,
+	     mat2d<T>& A);
+
+// A = alpha*x*y'+alpha*y*x'+A
+// A is a sym matrix
+template <class T>
+void Mat_syr2(MAT(UPLO) uploA,
+	      const vec1d<T>& x,
+	      const vec1d<T>& y,
+	      const T& alpha,
+	      mat2d<T>& A);
+
+// A = alpha*x*y+A
+// A is a M by N matri
+template <class T>
+void Mat_ger(const vec1d<T>& x,
+	     const vec1d<T>& y,
+	     const T& alpha,
+	     mat2d<T>& A);
+
+
+// x = op(A)*x
+// A is a triangular matrix
+template <class T>
+void Mat_trmv(MAT(UPLO) uploA,
+	      MAT(TRANSPOSE) transA,
+	      MAT(DIAG) diagA,
+	      const mat2d<T>& A,
+	      vec1d<T>& x);
+
+// x = op(A)(-1)*x
+// A is a triangular matrix
+template <class T>
+void Mat_trsv(MAT(UPLO) uploA,
+	      MAT(TRANSPOSE) transA,
+	      MAT(DIAG) diagA,
+	      const mat2d<T>& A,
+	      vec1d<T>& x);
 
 //---------------------level 3--------------------------
 
@@ -382,6 +446,7 @@ template <class T>
 void Mat_trmm(MAT(SIDE) sideA,
 	      MAT(UPLO) uploA,
 	      MAT(TRANSPOSE) transA,
+	      MAT(DIAG),
 	      const mat2d<T>& A,
 	      const T& alpha,
 	      mat2d<T>& B);
@@ -398,6 +463,7 @@ template <class T>
 void Mat_trsm(MAT(SIDE) sideA,
 	      MAT(UPLO) uploA,
 	      MAT(TRANSPOSE) transA,
+	      MAT(DIAG) diagA,
 	      const mat2d<T>& A,
 	      const T& alpha,
 	      mat2d<T>& B);
